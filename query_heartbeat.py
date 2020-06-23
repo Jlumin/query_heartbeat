@@ -46,7 +46,7 @@ def query_data(arg1):
 def calculateOFFtime(d):
     
     if ("No" in d) & ("results" in d):
-        outputStr = "Offline ,no data receive!!"
+        outputStr = "離線狀態 ,超過一天無接收到資料!!"
 
     else:
     # Create a dataframe from the URL by data crawling
@@ -93,7 +93,7 @@ def calculateOFFtime(d):
         # Calculate the offline time
         localTimeStamp = pd.to_datetime(strftime("%Y%m%d%H%M%S"), format="%Y%m%d%H%M%S")
         deltaT = localTimeStamp - lastestTimeStr
-        alrTimeIntv = timedelta(minutes = 15)
+        alrTimeIntv = timedelta(minutes = 30)
 
         if deltaT > alrTimeIntv:
 
@@ -102,7 +102,7 @@ def calculateOFFtime(d):
             deltaMin = (deltaT.seconds % 3600) // 60
             deltaSec = deltaT.seconds % 60
 
-            outputStr = "Offline time: {} day, {} hr, {} min, {} sec".format(deltaDay,deltaHr, deltaMin, deltaSec)
+            outputStr = "離線狀態，距離上次接收到資料時間: {} day, {} hr, {} min, {} sec".format(deltaDay,deltaHr, deltaMin, deltaSec)
         else:
             outputStr = "Online"            
     return outputStr
@@ -110,11 +110,11 @@ def calculateOFFtime(d):
 def WcalculateOFFtime(d):
     
     if ("No" in d) & ("results" in d):
-        outputStr = "離線狀態 ,無接收到資料!!"
+        outputStr = "離線狀態 ,超過一天接收到資料!!"
 
     else:
     # Create a dataframe from the URL by data crawling
-        colName=['time', 'id', 'depth', 'field1','field2']
+        colName=['id', 'time', 'depth', 'field1','field2']
         _Num = 0
         _df  = pd.DataFrame(columns=colName)
         df   = pd.DataFrame(columns=colName)
@@ -157,7 +157,7 @@ def WcalculateOFFtime(d):
         # Calculate the offline time
         localTimeStamp = pd.to_datetime(strftime("%Y%m%d%H%M%S"), format="%Y%m%d%H%M%S")
         deltaT = localTimeStamp - lastestTimeStr
-        alrTimeIntv = timedelta(minutes = 15)
+        alrTimeIntv = timedelta(minutes = 60)
 
         if deltaT > alrTimeIntv:
 
@@ -166,74 +166,76 @@ def WcalculateOFFtime(d):
             deltaMin = (deltaT.seconds % 3600) // 60
             deltaSec = deltaT.seconds % 60
 
-            outputStr = "Offline time: {} day, {} hr, {} min, {} sec".format(deltaDay,deltaHr, deltaMin, deltaSec)
+            outputStr = "離線狀態，距離上次接收到資料時間: {} day, {} hr, {} min, {} sec".format(deltaDay,deltaHr, deltaMin, deltaSec)
         else:
             outputStr = "Online"            
     return outputStr
 
-def calculateOFFtime_light(d):
-    
-    if ("No" in d) & ("results" in d):
-        outputStr = "離線狀態，無接收到資料"
-
-    else:    
-    # Create a dataframe from the URL by data crawling
-        colName=['id', 'time', 'weather', 'air','acceleration','cleavage','incline','field1','field2','field3']
-        _Num = 0
-        _df  = pd.DataFrame(columns=colName)
-        df   = pd.DataFrame(columns=colName)
-
-        for ii in range(0,len(d)):    
-            while colName[_Num] in d[ii]:
-                _lst = d[ii + 1]
-                _lst = _lst.strip(',')
-
-                if _lst == '' or (_lst in colName):
-                    _lst = None       
-
-                _df[colName[_Num]] = [_lst] # Put the list into the dataframe
-                if _Num < (len(colName)-1):
-                    _Num += 1
-                else:
-                    df = df.append(_df, ignore_index=True)
-                    _Num = 0 
-
-        # Convert argument to a numeric type(float64 or int64)
-        #numericCol = ['roll', 'pitch', 'yaw','field1','field2','field3']
-        #for ii in numericCol:
-        #    df[ii] = pd.to_numeric(df[ii])
-
-        # Convert the format of date
-        dates = df.time
-        df.index = pd.to_datetime(dates.astype(str), format='%Y%m%d%H%M%S')
-        df.index.name = 'time'
-        del df['time']
-
-        # Check dataframe format
-        # df.info()
-
-        # Query the latest time stamp
-        lastestTimeStr = df.index[-1]
-
-        # Release the memory
-        del df
-
-        # Calculate the offline time
-        localTimeStamp = pd.to_datetime(strftime("%Y%m%d%H%M%S"), format="%Y%m%d%H%M%S")
-        deltaT = localTimeStamp - lastestTimeStr
-        alrTimeIntv = timedelta(minutes = 15)
-
-        if deltaT > alrTimeIntv:
-
-            deltaDay = deltaT.days
-            deltaHr  = deltaT.seconds // 3600
-            deltaMin = (deltaT.seconds % 3600) // 60
-            deltaSec = deltaT.seconds % 60
-
-            outputStr = "Offline time: {} day, {} hr".format(deltaDay,deltaHr)
-        else:
-            outputStr = "Online"            
-    return outputStr
+# =============================================================================
+# def calculateOFFtime_light(d):
+#     
+#     if ("No" in d) & ("results" in d):
+#         outputStr = "離線狀態，無接收到資料"
+# 
+#     else:    
+#     # Create a dataframe from the URL by data crawling
+#         colName=['id', 'time', 'weather', 'air','acceleration','cleavage','incline','field1','field2','field3']
+#         _Num = 0
+#         _df  = pd.DataFrame(columns=colName)
+#         df   = pd.DataFrame(columns=colName)
+# 
+#         for ii in range(0,len(d)):    
+#             while colName[_Num] in d[ii]:
+#                 _lst = d[ii + 1]
+#                 _lst = _lst.strip(',')
+# 
+#                 if _lst == '' or (_lst in colName):
+#                     _lst = None       
+# 
+#                 _df[colName[_Num]] = [_lst] # Put the list into the dataframe
+#                 if _Num < (len(colName)-1):
+#                     _Num += 1
+#                 else:
+#                     df = df.append(_df, ignore_index=True)
+#                     _Num = 0 
+# 
+#         # Convert argument to a numeric type(float64 or int64)
+#         #numericCol = ['roll', 'pitch', 'yaw','field1','field2','field3']
+#         #for ii in numericCol:
+#         #    df[ii] = pd.to_numeric(df[ii])
+# 
+#         # Convert the format of date
+#         dates = df.time
+#         df.index = pd.to_datetime(dates.astype(str), format='%Y%m%d%H%M%S')
+#         df.index.name = 'time'
+#         del df['time']
+# 
+#         # Check dataframe format
+#         # df.info()
+# 
+#         # Query the latest time stamp
+#         lastestTimeStr = df.index[-1]
+# 
+#         # Release the memory
+#         del df
+# 
+#         # Calculate the offline time
+#         localTimeStamp = pd.to_datetime(strftime("%Y%m%d%H%M%S"), format="%Y%m%d%H%M%S")
+#         deltaT = localTimeStamp - lastestTimeStr
+#         alrTimeIntv = timedelta(minutes = 40)
+# 
+#         if deltaT > alrTimeIntv:
+# 
+#             deltaDay = deltaT.days
+#             deltaHr  = deltaT.seconds // 3600
+#             deltaMin = (deltaT.seconds % 3600) // 60
+#             deltaSec = deltaT.seconds % 60
+# 
+#             outputStr = "Offline time: {} day, {} hr".format(deltaDay,deltaHr)
+#         else:
+#             outputStr = "Online"            
+#     return outputStr
+# =============================================================================
 
 
 locationList = ["Demo", "FD01_RMO"]
@@ -272,9 +274,9 @@ for location in locationList:
         URLstr = creatURL(str(idNumDict[ii]["id"]),queryDate) # Format in (id_Num, yyyymm)
         # print("Look at here:" + URLstr)
         qD = query_data(URLstr)
-        print(qD)
+        #print(qD)
         if ("No" in qD) & ("results" in qD):
-            print("{} 離線超過一天！".format(idNumDict[ii]["id"]))
+            #print("{} 離線超過一天！".format(idNumDict[ii]["id"]))
             URLstr = creatURL(str(idNumDict[ii]["id"]),quertMonth)
             qD = query_data(URLstr)    
         if idNumDict[ii]["id"] in ['3039', '3038', '3040', '2026']:
@@ -299,7 +301,7 @@ for location in locationList:
             writing = "{}    {}    {}".format(idNumDict[ii]["name"],idNumDict[ii]["id"],writingStr)
             file.write(writing)
             file.write("\n")
-        print(str(idNumDict[ii]["id"]) + "  Done.")
+        #print(str(idNumDict[ii]["id"]) + "  Done.")
 
 
 # Send a e-mail
@@ -313,7 +315,7 @@ for ii in range(0, len(saveFid)):
         msg += file.read()       
         
 mime = MIMEText(msg, "plain", "utf-8")
-mime["Subject"] = "Icebergtek Device heartbeat\n"
+mime["Subject"] = "連江縣淹水感知器狀態\n"
 msgEmail        = mime.as_string()  
 
 #to_addr  = ["jim@icebergtek.com", "white@icebergtek.com", "ian@icebergtek.com",
