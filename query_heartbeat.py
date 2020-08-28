@@ -14,10 +14,10 @@ import os
 def creatURL(idN, t):
     Ntu=['7507', '3039', '3038', '3040', '2026']
     if idN in Ntu:
-        string = "http://ec2-54-175-179-28.compute-1.amazonaws.com/get_ntu_hri_data.php?device_id={}&year_month={}".format(idN,t)
+        string = "www.database.com".format(idN,t)
         return string
     else:
-        string = "http://ec2-54-175-179-28.compute-1.amazonaws.com/get_thinktron_data.php?device_id={}&year_month={}".format(idN,t)
+        string = "www.database.com".format(idN,t)
         return string   
 
 def query_data(arg1):
