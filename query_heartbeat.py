@@ -305,9 +305,9 @@ for location in locationList:
 
 
 # Send a e-mail
-smtpssl=smtplib.SMTP_SSL("smtp.gmail.com", 465)
+smtpssl=smtplib.SMTP_SSL(".gmail.com", 465)
 smtpssl.ehlo()
-smtpssl.login("icebergtek.mail@gmail.com", "odiedag8")
+smtpssl.login("mail@gmail.com", ")
 
 msg = ""
 for ii in range(0, len(saveFid)):    
@@ -318,12 +318,9 @@ mime = MIMEText(msg, "plain", "utf-8")
 mime["Subject"] = "連江縣淹水感知器狀態\n"
 msgEmail        = mime.as_string()  
 
-#to_addr  = ["jim@icebergtek.com", "white@icebergtek.com", "ian@icebergtek.com",
-#            "yujiachiu@ntu.edu.tw", "yolandadeschanel@gmail.com", "milk920120@gmail.com"]
+to_addr  = ["cebergtek.com","mail.com"]          
 
-to_addr  = ["jim@icebergtek.com","zmingwu2011@gmail.com"]          
-
-status = smtpssl.sendmail("icebergtek.mail@gmail.com", 
+status = smtpssl.sendmail("gmail.com", 
                           to_addr, 
                           msgEmail)
 if status == {}:
